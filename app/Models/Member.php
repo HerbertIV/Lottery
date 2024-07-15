@@ -10,6 +10,10 @@ class Member extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name'
+    ];
+
     public function lotterySession(): BelongsTo
     {
         return $this->belongsTo(LotterySession::class);

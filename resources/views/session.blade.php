@@ -937,13 +937,21 @@
 
                         <div class="pt-3 sm:pt-5">
                             <h2 class="text-xl font-semibold text-black dark:text-white">Dodaj uczestnika</h2>
-
                             <form method="POST">
+                                @csrf
                                 <div class="sm:col-span-4">
                                     <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Imię i nazwisko</label>
                                     <div class="mt-2 flex">
-                                        <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                                            <input type="text" name="name" id="name" autocomplete="name" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
+                                        <div class="flex rounded-md shadow-sm sm:max-w-md">
+                                            <input type="text" name="name" id="name" autocomplete="name" placeholder="name"
+
+                                                   class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
+                                        </div>
+                                        <div class="flex rounded-md shadow-sm sm:max-w-md" style="margin-left: 5px">
+                                            <input type="text" name="phone" id="phone" autocomplete="phone" placeholder="phone"
+                                                   style="color: black; padding: 0 5px"
+                                                   class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                            >
                                         </div>
                                         <button type="submit" style="margin-left: 15px">
                                             <svg class="size-5 sm:size-6" fill="#FF2D20" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
@@ -963,7 +971,6 @@
                             </form>
                         </div>
                     </div>
-
                     <div
                         class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
                     >

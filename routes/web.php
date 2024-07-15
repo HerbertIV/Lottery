@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\LotteryController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/{session}', [\App\Http\Controllers\LotteryController::class, 'show']);
-Route::post('/{session}', [\App\Http\Controllers\LotteryController::class, 'store']);
+Route::get('/', [LotteryController::class, 'render'])->name('session.render');
+Route::post('/', [LotteryController::class, 'setSession'])->name('session.set');
+Route::get('/{session}', [LotteryController::class, 'show'])->name('session.show');
+Route::post('/{session}', [LotteryController::class, 'store'])->name('session.store');
