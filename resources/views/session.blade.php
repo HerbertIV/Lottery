@@ -104,7 +104,6 @@
             font-size: 100%;
             font-weight: inherit;
             line-height: inherit;
-            color: inherit;
             margin: 0;
             padding: 0
         }
@@ -910,7 +909,19 @@
                                 </div>
                                 @isset($members)
                                     @foreach($members as $member)
-                                        <p>{{ $member->name }}</p>
+                                        <div class="flex">
+                                            <form method="POST" action="{{ route('session.member.destroy', ['session' => $session, 'member' => $member]) }}">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" style="border-radius: 50%; border: 1px solid #FF2D20; margin-right: 5px">
+                                                    <svg
+                                                        width="25px" height="25px" viewBox="0 0 25 25" fill="#FF2D20" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M6 12L18 12" stroke="#FF2D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                            <p>{{ $member->name }}</p>
+                                        </div>
                                     @endforeach
                                 @endif
                             </div>
@@ -922,7 +933,8 @@
                     >
                         <div
                             class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                            <svg class="size-5 sm:size-6" fill="#FF2D20" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="size-5 sm:size-6" fill="#FF2D20" version="1.1" id="Capa_1"
+                                 xmlns="http://www.w3.org/2000/svg"
                                  xmlns:xlink="http://www.w3.org/1999/xlink"
                                  width="800px" height="800px" viewBox="0 0 45 45"
                                  xml:space="preserve">
@@ -937,24 +949,27 @@
 
                         <div class="pt-3 sm:pt-5">
                             <h2 class="text-xl font-semibold text-black dark:text-white">Dodaj uczestnika</h2>
-                            <form method="POST">
+                            <form method="POST" action="{{ route('session.member.store', ['session' => $session, 'member' => $member]) }}">
                                 @csrf
                                 <div class="sm:col-span-4">
-                                    <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Imię i nazwisko</label>
+                                    <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Imię i
+                                        nazwisko</label>
                                     <div class="mt-2 flex">
                                         <div class="flex rounded-md shadow-sm sm:max-w-md">
-                                            <input type="text" name="name" id="name" autocomplete="name" placeholder="name"
-
+                                            <input type="text" name="name" id="name" autocomplete="name"
+                                                   placeholder="name"
                                                    class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
                                         </div>
                                         <div class="flex rounded-md shadow-sm sm:max-w-md" style="margin-left: 5px">
-                                            <input type="text" name="phone" id="phone" autocomplete="phone" placeholder="phone"
+                                            <input type="text" name="phone" id="phone" autocomplete="phone"
+                                                   placeholder="phone"
                                                    style="color: black; padding: 0 5px"
                                                    class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                             >
                                         </div>
                                         <button type="submit" style="margin-left: 15px">
-                                            <svg class="size-5 sm:size-6" fill="#FF2D20" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                                            <svg class="size-5 sm:size-6" fill="#FF2D20" version="1.1" id="Capa_1"
+                                                 xmlns="http://www.w3.org/2000/svg"
                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
                                                  width="800px" height="800px" viewBox="0 0 45 45"
                                                  xml:space="preserve">
@@ -969,6 +984,15 @@
                                     </div>
                                 </div>
                             </form>
+                            @if ($errors->any())
+                                <div class="alert alert-danger mt-4">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li style="color: #FF2D20">{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div
@@ -991,8 +1015,8 @@
 
                         <div class="pt-3 sm:pt-5">
                             <h2 class="text-xl font-semibold text-black dark:text-white">Już losowali</h2>
-                            @isset($members)
-                                @foreach($members as $member)
+                            @isset($membersWasDrawn)
+                                @foreach($membersWasDrawn as $member)
                                     <p>{{ $member->name }}</p>
                                 @endforeach
                             @endif
@@ -1014,8 +1038,8 @@
                         </div>
                         <div class="pt-3 sm:pt-5">
                             <h2 class="text-xl font-semibold text-black dark:text-white">Oczekują na losowanie</h2>
-                            @isset($members)
-                                @foreach($members as $member)
+                            @isset($membersHasDrawn)
+                                @foreach($membersHasDrawn as $member)
                                     <p>{{ $member->name }}</p>
                                 @endforeach
                             @endif

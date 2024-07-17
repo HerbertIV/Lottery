@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UniqueWith;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MemberStoreRequest extends FormRequest
@@ -22,8 +23,8 @@ class MemberStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', new UniqueWith(['phone'])],
+            'phone' => ['required', 'string', 'max:9', 'regex:/^\d{9}$/', new UniqueWith(['name'])],
         ];
     }
 }

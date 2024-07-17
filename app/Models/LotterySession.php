@@ -14,4 +14,14 @@ class LotterySession extends Model
     {
         return $this->hasMany(Member::class);
     }
+
+    public function membersWasDrawn(): HasMany
+    {
+        return $this->members()->wasDrawn();
+    }
+
+    public function membersHasDrawn(): HasMany
+    {
+        return $this->members()->hasDrawn();
+    }
 }

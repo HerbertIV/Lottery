@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MemberStoreRequest;
 use App\Http\Requests\SessionSetRequest;
 use App\Models\LotterySession;
+use App\Models\Member;
 use App\Services\Contracts\MembersServiceContract;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 class LotteryController extends Controller
 {
@@ -31,7 +33,10 @@ class LotteryController extends Controller
     {
         $lotterySession = LotterySession::whereSessionName($session)->first();
         return view('session', [
-            'members' => $lotterySession->members
+            'members' => $lotterySession->members,
+            'membersWasDrawn' => $lotterySession->membersWasDrawn,
+            'membersHasDrawn' => $lotterySession->membersHasDrawn,
+            'session' => $session
         ]);
     }
 
@@ -40,9 +45,17 @@ class LotteryController extends Controller
         $lotterySession = LotterySession::whereSessionName($session)->first();
         $this->membersService->store($lotterySession, $request);
         $lotterySession->refresh();
-        dd($lotterySession);
         return view('session', [
-            'members' => $lotterySession->members
+            'members' => $lotterySession->members,
+            'session' => $session
         ]);
+    }
+
+    public function destroy(Request $request, string $session, Member $member)
+    {
+        $this->membersService->destroy($member);
+        return redirect(
+            route('session.show', ['session' => $session])
+        );
     }
 }
