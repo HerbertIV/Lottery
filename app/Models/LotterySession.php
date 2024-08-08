@@ -10,18 +10,24 @@ class LotterySession extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'session_name',
+        'status'
+    ];
+
     public function members(): HasMany
     {
         return $this->hasMany(Member::class);
     }
 
-    public function membersWasDrawn(): HasMany
+    public function membersCanDraw(): HasMany
     {
-        return $this->members()->wasDrawn();
+        return $this->members()->canDraw();
     }
 
-    public function membersHasDrawn(): HasMany
+    public function membersCanNotDraw(): HasMany
     {
-        return $this->members()->hasDrawn();
+        return $this->members()->canNotDraw();
     }
+
 }

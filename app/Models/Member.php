@@ -13,7 +13,9 @@ class Member extends Model
 
     protected $fillable = [
         'name',
-        'phone'
+        'phone',
+        'drawn_member_id',
+        'can_draw',
     ];
 
     public function lotterySession(): BelongsTo
@@ -21,13 +23,19 @@ class Member extends Model
         return $this->belongsTo(LotterySession::class);
     }
 
-    public function scopeWasDrawn(Builder $query): void
+
+    public function memberDrawn(): BelongsTo
     {
-        $query->whereWasDrawn(true);
+        return $this->belongsTo(Member::class, 'drawn_member_id');
     }
 
-    public function scopeHasDrawn(Builder $query): void
+    public function scopeCanDraw(Builder $query): void
     {
-        $query->whereHasDrawn(true);
+        $query->whereCanDraw(true);
+    }
+
+    public function scopeCanNotDraw(Builder $query): void
+    {
+        $query->whereCanDraw(false);
     }
 }

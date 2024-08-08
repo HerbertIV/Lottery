@@ -6,6 +6,7 @@ use App\Http\Requests\MemberStoreRequest;
 use App\Http\Requests\SessionSetRequest;
 use App\Models\LotterySession;
 use App\Models\Member;
+use App\Services\Contracts\LotterySessionServiceContract;
 use App\Services\Contracts\MembersServiceContract;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -13,7 +14,8 @@ use Illuminate\Http\Request;
 class LotteryController extends Controller
 {
     public function __construct(
-        private MembersServiceContract $membersService
+        private MembersServiceContract $membersService,
+        private LotterySessionServiceContract $lotterySessionService
     ) {
     }
 
@@ -24,38 +26,43 @@ class LotteryController extends Controller
 
     public function setSession(SessionSetRequest $sessionSetRequest)
     {
+        $member = $this->membersService->getMemberByName($sessionSetRequest->input('name'));
         return redirect(
-            route('session.show', ['session' => $sessionSetRequest->input('session')])
+            route('session.lottery', [
+                'session' => $sessionSetRequest->input('session'),
+                'member' => $member
+            ])
         );
     }
 
     public function show(string $session): View
     {
-        $lotterySession = LotterySession::whereSessionName($session)->first();
+        $lotterySession = $this->lotterySessionService->getSessionByName($session);
+
         return view('session', [
             'members' => $lotterySession->members,
-            'membersWasDrawn' => $lotterySession->membersWasDrawn,
-            'membersHasDrawn' => $lotterySession->membersHasDrawn,
+            'membersCanDraw' => $lotterySession->membersCanDraw,
+            'membersCanNotDraw' => $lotterySession->membersCanNotDraw,
             'session' => $session
         ]);
     }
 
-    public function store(MemberStoreRequest $request, string $session): View
+    public function lottery(Request $request, string $session, Member $member): View
     {
-        $lotterySession = LotterySession::whereSessionName($session)->first();
-        $this->membersService->store($lotterySession, $request);
-        $lotterySession->refresh();
-        return view('session', [
-            'members' => $lotterySession->members,
-            'session' => $session
+        return view('lottery', [
+            'session' => $session,
+            'member' => $member
         ]);
     }
 
-    public function destroy(Request $request, string $session, Member $member)
+    public function drawMember(Request $request, string $session, Member $member): View
     {
-        $this->membersService->destroy($member);
-        return redirect(
-            route('session.show', ['session' => $session])
-        );
+        $memberDrawn = $this->membersService->draw($member, $session);
+
+        return view('lottery', [
+            'session' => $session,
+            'member' => $member,
+            'memberDrawn' => $memberDrawn,
+        ]);
     }
 }

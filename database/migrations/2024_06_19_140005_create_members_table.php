@@ -16,9 +16,12 @@ return new class extends Migration
             $table->unsignedInteger('lottery_session_id');
             $table->string('name', 255);
             $table->string('phone', 9);
-            $table->boolean('has_drawn')->default(false);
-            $table->boolean('was_drawn')->default(false);
+            $table->boolean('can_draw')->default(true);
+            $table->unsignedInteger('drawn_member_id')->nullable();
             $table->timestamps();
+
+            $table->index('drawn_member_id', 'idx-members-drawn_member_id');
+            $table->foreign('drawn_member_id', 'fk-members-drawn_member_id-members-id')->on('members')->references('id');
         });
     }
 
