@@ -867,7 +867,8 @@
                         <div class="relative flex items-center gap-12 lg:items-end">
                             <div id="docs-card-content" class="flex items-start gap-12 lg:flex-col">
                                 <div class="pt-3 sm:pt-5 lg:pt-0">
-                                    <h2 class="text-xl font-semibold text-black dark:text-white">Podaj kod sesji losowania oraz imie i nazwisko osoby losującej</h2>
+                                    <h2 class="text-xl font-semibold text-black dark:text-white">Podaj kod sesji
+                                        losowania oraz imie i nazwisko osoby losującej</h2>
                                 </div>
                                 <div class="mt-4 flex rounded-md shadow-sm sm:max-w-md w-full justify-center">
                                     <form method="post" action="{{ route('session.set') }}">
@@ -888,11 +889,17 @@
                                             autocomplete="name"
                                             style="color: black; padding: 0 5px"
                                             class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
-                                        <button type="submit" style="font-weight: bold; padding: 0px 5px;margin-left: 15px; background-color: #FF2D20; color: white; border-radius: 5px">
+                                        <button type="submit"
+                                                style="font-weight: bold; padding: 0px 5px;margin-left: 15px; background-color: #FF2D20; color: white; border-radius: 5px">
                                             Wybierz
                                         </button>
                                     </form>
                                 </div>
+                                <ul>
+                                    @foreach($loterrySessions as $loterrySession)
+                                        <li>{{ $loterrySession->session_name }}</li>
+                                    @endforeach
+                                </ul>
                                 @if ($errors->any())
                                     <div class="alert alert-danger">
                                         <ul>

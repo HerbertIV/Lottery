@@ -48,22 +48,22 @@ class MembersService implements MembersServiceContract
         return Member::whereName(mb_strtolower($memberName))->first();
     }
 
-    public function getMemberCanDraw(LotterySession $lotterySession, ?Member $withoutMe = null): Collection
+    public function getMemberNotDrawn(LotterySession $lotterySession, ?Member $withoutMe = null): Collection
     {
         return $lotterySession
-            ->membersCanDraw()
+            ->membersNotDrawn()
             ->when($withoutMe, fn (Builder $builder) => $builder->where('id', '<>', $withoutMe->getKey()))
             ->get();
     }
 
     public function draw(Member $member, string $sessionName): ?Member
     {
-        if (!$member->canDraw()) {
+        if (!$member->can_draw) {
             throw new \Exception('Ten uczestnik już losował');
         }
 
         $lottery = $this->lotterySessionService->getSessionByName($sessionName);
-        $memberDrawn = $this->getMemberCanDraw($lottery, $member)->random();
+        $memberDrawn = $this->getMemberNotDrawn($lottery, $member)->random();
         $this->markAsDrawn($member, $memberDrawn);
 
         return $memberDrawn;
@@ -75,5 +75,18 @@ class MembersService implements MembersServiceContract
             'can_draw' => false,
             'drawn_member_id' => $memberDrawn->getKey()
         ]);
+        $memberDrawn->update([
+            'drawn' => true
+        ]);
+    }
+
+    public function sendDrawnMember(Member $member, string $sessionName): bool
+    {
+        $memberDrawn = $member->memberDrawn;
+        if (!$memberDrawn) {
+            $memberDrawn = $this->draw($member, $sessionName);
+        }
+
+
     }
 }

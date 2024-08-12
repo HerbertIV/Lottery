@@ -905,7 +905,7 @@
                         <div class="w-full relative flex items-center gap-6 lg:items-end">
                             <div id="docs-card-content" class="w-full flex items-start gap-12 lg:flex-col">
                                 <div class="w-full pt-3 sm:pt-5 lg:pt-0 justify-center flex">
-                                    @if ($member->canDraw())
+                                    @if ($member->can_draw)
                                         <h2 class="text-xl font-semibold text-black dark:text-white">Kliknij aby wylosować osobę</h2>
                                         <form action="{{ route('session.draw_member', ['session' => $session, 'member' => $member]) }}" method="POST">
                                             @csrf
@@ -914,11 +914,12 @@
                                             </button>
                                         </form>
                                     @else
-                                        <h2 class="text-xl font-semibold text-black dark:text-white">Ten uczestnik już losował osobę</h2>
-                                    @endif
-                                    @isset ($memberDrawn)
-                                        <h2 class="text-xl font-semibold text-black dark:text-white">Wylosowałeś: </h2>
-                                        <h2 class="text-xl font-semibold text-black dark:text-white">{{ $memberDrawn->name }}</h2>
+                                        @isset ($memberDrawn)
+                                            <h2 class="text-xl font-semibold text-black dark:text-white">Wylosowałeś: </h2>
+                                            <h2 class="text-xl font-semibold text-black dark:text-white">{{ $memberDrawn->name }}</h2>
+                                        @else
+                                            <h2 class="text-xl font-semibold text-black dark:text-white">Ten uczestnik już losował osobę</h2>
+                                        @endif
                                     @endif
                                 </div>
 

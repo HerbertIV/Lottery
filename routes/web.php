@@ -16,5 +16,6 @@ Route::group(['prefix' => '/{session}'], function () {
     Route::get('/{member}', [LotteryController::class, 'lottery'])->name('session.lottery');
     Route::post('/{member}', [LotteryController::class, 'drawMember'])->name('session.draw_member');
     Route::delete('/{member}', [ManageLotteryController::class, 'destroyMember'])->name('session.member.destroy');
+    Route::get('/{member}', [LotteryController::class, 'sendDrawnMember'])->name('session.member.send-drawn-member');
 });
 

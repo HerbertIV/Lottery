@@ -30,4 +30,14 @@ class LotterySession extends Model
         return $this->members()->canNotDraw();
     }
 
+    public function membersNotDrawn(): HasMany
+    {
+        return $this->members()->notDrawn();
+    }
+
+    public function membersDrawn(): HasMany
+    {
+        return $this->members()->drawn();
+    }
+
 }

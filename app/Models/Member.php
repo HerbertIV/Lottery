@@ -16,6 +16,7 @@ class Member extends Model
         'phone',
         'drawn_member_id',
         'can_draw',
+        'drawn',
     ];
 
     public function lotterySession(): BelongsTo
@@ -38,4 +39,15 @@ class Member extends Model
     {
         $query->whereCanDraw(false);
     }
+
+    public function scopeNotDrawn(Builder $query): void
+    {
+        $query->whereDrawn(false);
+    }
+
+    public function scopeDrawn(Builder $query): void
+    {
+        $query->whereDrawn(true);
+    }
+
 }

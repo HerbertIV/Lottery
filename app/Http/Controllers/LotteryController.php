@@ -21,7 +21,9 @@ class LotteryController extends Controller
 
     public function render(): View
     {
-        return view('home');
+        return view('home', [
+            'loterrySessions' => LotterySession::all()
+        ]);
     }
 
     public function setSession(SessionSetRequest $sessionSetRequest)
@@ -58,6 +60,17 @@ class LotteryController extends Controller
     public function drawMember(Request $request, string $session, Member $member): View
     {
         $memberDrawn = $this->membersService->draw($member, $session);
+
+        return view('lottery', [
+            'session' => $session,
+            'member' => $member,
+            'memberDrawn' => $memberDrawn,
+        ]);
+    }
+
+    public function sendDrawnMember(Request $request, string $session, Member $member): View
+    {
+        $memberDrawn = $this->membersService->sendDrawnMember($member, $session);
 
         return view('lottery', [
             'session' => $session,
