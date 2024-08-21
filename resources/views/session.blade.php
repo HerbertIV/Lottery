@@ -848,9 +848,34 @@
                 --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity))
             }
         }
+        .alert {
+            border-radius: 25px;
+            width: 80%;
+            margin: auto;
+            margin-top: 10px;
+            display: flex;
+            padding: 10px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .alert-danger {
+            color: #ffffffad;
+            font-weight: 600;
+            background: #ff2d20;
+        }
     </style>
 </head>
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
+@if ($errors->any())
+    <div class="alert alert-danger mt-4">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
     <img id="background" class="absolute -left-20 top-0 max-w-[877px]"
          src="https://laravel.com/assets/img/welcome/background.svg"/>
@@ -1003,15 +1028,6 @@
                                     </div>
                                 </div>
                             </form>
-                            @if ($errors->any())
-                                <div class="alert alert-danger mt-4">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li style="color: #FF2D20">{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
                         </div>
                     </div>
                     <div

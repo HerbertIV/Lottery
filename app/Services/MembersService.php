@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Facades\Sms;
 use App\Http\Requests\MemberStoreRequest;
 use App\Models\LotterySession;
 use App\Models\Member;
@@ -87,6 +88,10 @@ class MembersService implements MembersServiceContract
             $memberDrawn = $this->draw($member, $sessionName);
         }
 
-
+        return Sms::make()
+            ->setTo($member->phone)
+            ->setFrom('TEST')
+            ->setMessage('Wylosowałeś: ' . $memberDrawn->name)
+            ->send();
     }
 }

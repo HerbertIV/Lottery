@@ -71,7 +71,7 @@ class LotteryController extends Controller
     public function sendDrawnMember(Request $request, string $session, Member $member): View
     {
         $memberDrawn = $this->membersService->sendDrawnMember($member, $session);
-
+        dd($memberDrawn);
         return view('lottery', [
             'session' => $session,
             'member' => $member,
