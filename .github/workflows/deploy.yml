@@ -11,6 +11,15 @@ jobs:
         node-version: [ 20.x ]
     steps:
       - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer:v2
+          coverage: none
+      - name: Install Project Dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
