@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\AuthService;
+use App\Services\Contracts\AuthServiceContract;
 use App\Services\Contracts\LotterySessionServiceContract;
 use App\Services\Contracts\MembersServiceContract;
 use App\Services\Contracts\SmsServiceContract;
@@ -15,6 +17,7 @@ class ServiceRegisterServiceProvider extends ServiceProvider
     public $singletons = [
         MembersServiceContract::class => MembersService::class,
         LotterySessionServiceContract::class => LotterySessionService::class,
-        SmsServiceContract::class => SmsService::class
+        SmsServiceContract::class => SmsService::class,
+        AuthServiceContract::class => AuthService::class
     ];
 }

@@ -33,6 +33,7 @@ class MembersService implements MembersServiceContract
             return $member->delete();
         } catch (\Exception $exception) {
             Log::error('Error in member destroy: ' . $exception->getMessage());
+
             return false;
         }
     }
@@ -53,7 +54,7 @@ class MembersService implements MembersServiceContract
     {
         return $lotterySession
             ->membersNotDrawn()
-            ->when($withoutMe, fn (Builder $builder) => $builder->where('id', '<>', $withoutMe->getKey()))
+            ->when($withoutMe, fn (Builder $builder) => $builder->where('uuid', '<>', $withoutMe->getKey()))
             ->get();
     }
 
@@ -74,7 +75,7 @@ class MembersService implements MembersServiceContract
     {
         $member->update([
             'can_draw' => false,
-            'drawn_member_id' => $memberDrawn->getKey()
+            'drawn_member_uuid' => $memberDrawn->getKey()
         ]);
         $memberDrawn->update([
             'drawn' => true
@@ -91,7 +92,7 @@ class MembersService implements MembersServiceContract
         return Sms::make()
             ->setTo($member->phone)
             ->setFrom('TEST')
-            ->setMessage('Wylosowałeś: ' . $memberDrawn->name)
+            ->setMessage('Wylosowales ' . $memberDrawn->name)
             ->send();
     }
 }

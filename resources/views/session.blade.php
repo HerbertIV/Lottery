@@ -848,6 +848,7 @@
                 --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity))
             }
         }
+
         .alert {
             border-radius: 25px;
             width: 80%;
@@ -863,6 +864,20 @@
             color: #ffffffad;
             font-weight: 600;
             background: #ff2d20;
+        }
+        .box {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            width: 100%;
+        }
+        .btn-send {
+            margin-left: 15px;
+            padding: 10px 20px;
+            background: #FF2D20;
+            border-radius: 6px;
+            font-weight: 600;
+            color: white;
         }
     </style>
 </head>
@@ -891,67 +906,54 @@
                             fill="currentColor"/>
                     </svg>
                 </div>
-                @if (Route::has('login'))
-                    <nav class="-mx-3 flex flex-1 justify-end">
-                        @auth
-                            <a
-                                href="{{ url('/dashboard') }}"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Dashboard
-                            </a>
-                        @else
-                            <a
-                                href="{{ route('login') }}"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Log in
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a
-                                    href="{{ route('register') }}"
-                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                >
-                                    Register
-                                </a>
-                            @endif
-                        @endauth
-                    </nav>
-                @endif
             </header>
 
             <main class="mt-6">
                 <div class="grid gap-6 lg:grid-cols-2 lg:gap-8">
                     <div
                         id="docs-card"
-                        class="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
+                        class="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6
+                        shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition
+                        duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none
+                        focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10 dark:bg-zinc-900
+                        dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700
+                        dark:focus-visible:ring-[#FF2D20]"
                     >
                         <div class="relative flex items-center gap-6 lg:items-end">
-                            <div id="docs-card-content" class="flex items-start gap-6 lg:flex-col">
-                                <div class="pt-3 sm:pt-5 lg:pt-0">
-                                    <h2 class="text-xl font-semibold text-black dark:text-white">Lista uczestników</h2>
-                                </div>
-                                @isset($members)
-                                    @foreach($members as $member)
-                                        <div class="flex">
-                                            <form method="POST" action="{{ route('session.member.destroy', ['session' => $session, 'member' => $member]) }}">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" style="border-radius: 50%; border: 1px solid #FF2D20; margin-right: 5px">
-                                                    <svg
-                                                        width="25px" height="25px" viewBox="0 0 25 25" fill="#FF2D20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M6 12L18 12" stroke="#FF2D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    </svg>
-                                                </button>
-                                            </form>
-                                            <p>{{ \Illuminate\Support\Str::of($member->name)->apa() }}</p>
-                                            <form method="GET" action="{{ route('session.member.send-drawn-member', ['session' => $session, 'member' => $member]) }}">
-                                                @csrf
-                                                @method('get')
-                                                <button type="submit" style="margin-left: 5px" title="Wyślij SMS z wylosowaną osobą">
-                                                    <svg fill="#FF2D20" height="25px" width="25px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                         viewBox="0 0 458 458" xml:space="preserve">
+                            @auth
+                                <div id="docs-card-content" class="flex items-start gap-6 lg:flex-col">
+                                    <div class="pt-3 sm:pt-5 lg:pt-0">
+                                        <h2 class="text-xl font-semibold text-black dark:text-white">Lista uczestników</h2>
+                                    </div>
+                                    @isset($members)
+                                        @foreach($members as $member)
+                                            <div class="flex">
+                                                <form method="POST"
+                                                      action="{{ route('session.member.destroy', ['session' => $session, 'member' => $member]) }}">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit"
+                                                            style="border-radius: 50%; border: 1px solid #FF2D20; margin-right: 5px">
+                                                        <svg
+                                                            width="25px" height="25px" viewBox="0 0 25 25" fill="#FF2D20"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M6 12L18 12" stroke="#FF2D20" stroke-width="2"
+                                                                  stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                                <p>{{ \Illuminate\Support\Str::of($member->name)->apa() }}</p>
+                                                @if ($member->can_draw)
+                                                    <form method="GET"
+                                                          action="{{ route('session.member.send-drawn-member', ['session' => $session, 'member' => $member]) }}">
+                                                        @csrf
+                                                        @method('get')
+                                                        <button type="submit" style="margin-left: 5px"
+                                                                title="Wyślij SMS z wylosowaną osobą">
+                                                            <svg fill="#FF2D20" height="25px" width="25px" version="1.1"
+                                                                 id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                                                                 xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                 viewBox="0 0 458 458" xml:space="preserve">
                                                         <g>
                                                             <g>
                                                                 <path d="M428,41.534H30c-16.569,0-30,13.431-30,30v252c0,16.568,13.432,30,30,30h132.1l43.942,52.243
@@ -963,25 +965,48 @@
                                                             </g>
                                                         </g>
                                                     </svg>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
+                                                        </button>
+                                                        <button type="submit" style="margin-left: 5px"
+                                                                title="Wyślij Mail z wylosowaną osobą">
+                                                            <svg fill="#FF2D20" height="25px" width="25px" version="1.1"
+                                                                 id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                                                                 xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                 viewBox="0 0 75.294 75.294" xml:space="preserve">
+                                                        <g>
+                                                            <path d="M66.097,12.089h-56.9C4.126,12.089,0,16.215,0,21.286v32.722c0,5.071,4.126,9.197,9.197,9.197h56.9
+                                                                c5.071,0,9.197-4.126,9.197-9.197V21.287C75.295,16.215,71.169,12.089,66.097,12.089z M61.603,18.089L37.647,33.523L13.691,18.089
+                                                                H61.603z M66.097,57.206h-56.9C7.434,57.206,6,55.771,6,54.009V21.457l29.796,19.16c0.04,0.025,0.083,0.042,0.124,0.065
+                                                                c0.043,0.024,0.087,0.047,0.131,0.069c0.231,0.119,0.469,0.215,0.712,0.278c0.025,0.007,0.05,0.01,0.075,0.016
+                                                                c0.267,0.063,0.537,0.102,0.807,0.102c0.001,0,0.002,0,0.002,0c0.002,0,0.003,0,0.004,0c0.27,0,0.54-0.038,0.807-0.102
+                                                                c0.025-0.006,0.05-0.009,0.075-0.016c0.243-0.063,0.48-0.159,0.712-0.278c0.044-0.022,0.088-0.045,0.131-0.069
+                                                                c0.041-0.023,0.084-0.04,0.124-0.065l29.796-19.16v32.551C69.295,55.771,67.86,57.206,66.097,57.206z"/>
+                                                        </g>
+                                                    </svg>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            @endauth
                         </div>
                     </div>
-
-                    <div
-                        class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                    >
+                    @auth
                         <div
-                            class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                            <svg class="size-5 sm:size-6" fill="#FF2D20" version="1.1" id="Capa_1"
-                                 xmlns="http://www.w3.org/2000/svg"
-                                 xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 width="800px" height="800px" viewBox="0 0 45 45"
-                                 xml:space="preserve">
+                            class="flex items-start gap-4 rounded-lg bg-white p-6
+                        shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05]
+                        transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none
+                        focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800
+                        dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
+                        >
+                            <div
+                                class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
+                                <svg class="size-5 sm:size-6" fill="#FF2D20" version="1.1" id="Capa_1"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     width="800px" height="800px" viewBox="0 0 45 45"
+                                     xml:space="preserve">
                                 <g>
                                     <path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141
                                         c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27
@@ -989,47 +1014,52 @@
                                         c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z"/>
                                 </g>
                             </svg>
-                        </div>
-
-                        <div class="pt-3 sm:pt-5">
-                            <h2 class="text-xl font-semibold text-black dark:text-white">Dodaj uczestnika</h2>
-                            <form method="POST" action="{{ route('session.member.store', ['session' => $session]) }}">
-                                @csrf
-                                <div class="sm:col-span-4">
-                                    <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Imię i
-                                        nazwisko</label>
-                                    <div class="mt-2 flex">
-                                        <div class="flex rounded-md shadow-sm sm:max-w-md">
-                                            <input type="text" name="name" id="name" autocomplete="name"
-                                                   placeholder="name"
-                                                   class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
+                            </div>
+                            <form class="flex w-full" method="POST" action="{{ route('session.member.store', ['session' => $session]) }}">
+                                <div class="pt-3 sm:pt-5">
+                                    <h2 class="text-xl font-semibold text-black dark:text-white">Dodaj uczestnika</h2>
+                                    @csrf
+                                    <div class="sm:col-span-4">
+                                        <div>
+                                            <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Imię i
+                                                nazwisko</label>
+                                            <div class="flex rounded-md shadow-sm sm:max-w-md">
+                                                <input type="text" name="name" id="name" autocomplete="name"
+                                                       style="color: black; padding: 0 5px"
+                                                       placeholder="name"
+                                                       class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
+                                            </div>
                                         </div>
-                                        <div class="flex rounded-md shadow-sm sm:max-w-md" style="margin-left: 5px">
-                                            <input type="text" name="phone" id="phone" autocomplete="phone"
-                                                   placeholder="phone"
-                                                   style="color: black; padding: 0 5px"
-                                                   class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                            >
+                                        <div>
+                                            <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Numer telefonu</label>
+                                            <div class="flex rounded-md shadow-sm sm:max-w-md">
+                                                <input type="text" name="phone" id="phone" autocomplete="phone"
+                                                       placeholder="phone"
+                                                       style="color: black; padding: 0 5px"
+                                                       class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                                >
+                                            </div>
                                         </div>
-                                        <button type="submit" style="margin-left: 15px">
-                                            <svg class="size-5 sm:size-6" fill="#FF2D20" version="1.1" id="Capa_1"
-                                                 xmlns="http://www.w3.org/2000/svg"
-                                                 xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                 width="800px" height="800px" viewBox="0 0 45 45"
-                                                 xml:space="preserve">
-                                                <g>
-                                                    <path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141
-                                                        c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27
-                                                        c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435
-                                                        c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z"/>
-                                                </g>
-                                            </svg>
-                                        </button>
+                                        <div>
+                                            <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Adres email</label>
+                                            <div class="flex rounded-md shadow-sm sm:max-w-md">
+                                                <input type="text" name="email" id="email" autocomplete="email"
+                                                       placeholder="email"
+                                                       style="color: black; padding: 0 5px"
+                                                       class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                                >
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
+                                <div class="mt-2 flex box">
+                                    <button class="btn-send" type="submit" style="margin-left: 15px">
+                                        Dodaj
+                                    </button>
                                 </div>
                             </form>
                         </div>
-                    </div>
+                    @endauth
                     <div
                         class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
                     >

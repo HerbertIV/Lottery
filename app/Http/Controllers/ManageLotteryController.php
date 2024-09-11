@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateSessionRequest;
+use App\Http\Requests\DestroyMemberRequest;
 use App\Http\Requests\MemberStoreRequest;
+use App\Http\Requests\SendDrawnMemberRequest;
+use App\Http\Requests\StoreSessionRequest;
 use App\Models\Member;
 use App\Services\Contracts\LotterySessionServiceContract;
 use App\Services\Contracts\MembersServiceContract;
@@ -19,7 +23,7 @@ class ManageLotteryController extends Controller
     ) {
     }
 
-    public function store(Request $request): RedirectResponse|Redirector
+    public function store(StoreSessionRequest $request): RedirectResponse|Redirector
     {
         $session = $this->lotterySessionService->generate();
         return redirect(
@@ -29,7 +33,7 @@ class ManageLotteryController extends Controller
         );
     }
 
-    public function create(Request $request): View
+    public function create(CreateSessionRequest $request): View
     {
         return view('create');
     }
@@ -47,11 +51,19 @@ class ManageLotteryController extends Controller
         ]);
     }
 
-    public function destroyMember(Request $request, string $session, Member $member): RedirectResponse|Redirector
+    public function destroyMember(DestroyMemberRequest $request, string $session, Member $member): RedirectResponse|Redirector
     {
         $this->membersService->destroy($member);
+
         return redirect(
             route('session.show', ['session' => $session])
         );
+    }
+
+    public function sendDrawnMember(SendDrawnMemberRequest $request, string $session, Member $member): RedirectResponse|Redirector
+    {
+        $this->membersService->sendDrawnMember($member, $session);
+
+        return redirect(route('session.show', [$session]));
     }
 }

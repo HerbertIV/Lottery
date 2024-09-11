@@ -3,18 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Member extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+
+    protected $primaryKey = 'uuid';
 
     protected $fillable = [
         'name',
         'phone',
-        'drawn_member_id',
+        'drawn_member_uuid',
         'can_draw',
         'drawn',
     ];
@@ -27,7 +30,7 @@ class Member extends Model
 
     public function memberDrawn(): BelongsTo
     {
-        return $this->belongsTo(Member::class, 'drawn_member_id');
+        return $this->belongsTo(Member::class, 'drawn_member_uuid');
     }
 
     public function scopeCanDraw(Builder $query): void

@@ -28,23 +28,27 @@ class SmsService implements SmsServiceContract
 
     public function __construct()
     {
-        $this->test = config('env') !== 'production';
-
+        $this->test = config('app.env') !== 'production';
     }
 
     public function send(): bool
     {
         $this->validate();
         $response = Http::withToken(env('SMS_API_TOKEN'))
+            ->asForm()
+            ->timeout(30)
             ->post(
                 self::URL,
                 [
+                    'test' => $this->test,
                     'msg' => $this->message ?? '',
                     'to' => $this->to,
                     'from' => $this->from
                 ]
             );
+
         $response->throwUnlessStatus(JsonResponse::HTTP_OK);
+
         return true;
     }
 
