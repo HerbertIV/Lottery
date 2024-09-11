@@ -1,7 +1,15 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: artigno
 service: laravel
-
+stages:
+  default:
+    resolvers:
+      awsAccount1:
+        type: aws
+        region: eu-central-1
+        euSsm:
+          type: ssm
+          region: eu-central-1
 provider:
     name: aws
     # The AWS region in which to deploy (us-east-1 is the default)
@@ -29,8 +37,8 @@ provider:
       DB_HOST: frog01.mikr.us
       DB_PORT: 31166
       DB_DATABASE: losowanie
-      DB_USERNAME: ${ssm:/parameter/lottery/prod/DB_USERNAME}
-      DB_PASSWORD: ${ssm:/parameter/lottery/prod/DB_PASSWORD}
+      DB_USERNAME: ${awsAccount1:euSsm:/lottery/prod/DB_USERNAME}
+      DB_PASSWORD: ${awsAccount1:euSsm:/lottery/prod/DB_PASSWORD}
       SESSION_DRIVER: database
       SESSION_LIFETIME: 120
       SESSION_ENCRYPT: false
@@ -58,7 +66,7 @@ provider:
       AWS_BUCKET:
       AWS_USE_PATH_STYLE_ENDPOINT: false
       VITE_APP_NAME: "${APP_NAME}"
-      SMS_API_TOKEN: ${ssm:/parameter/lottery/prod/SMS_API_TOKEN}
+      SMS_API_TOKEN: ${awsAccount1:euSsm:/lottery/prod/SMS_API_TOKEN}
 plugins:
   # We need to include the Bref plugin
   - ./vendor/bref/bref
