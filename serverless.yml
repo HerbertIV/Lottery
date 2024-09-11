@@ -25,20 +25,17 @@ provider:
       LOG_STACK: single
       LOG_DEPRECATIONS_CHANNEL: null
       LOG_LEVEL: debug
-
       DB_CONNECTION: mysql
       DB_HOST: frog01.mikr.us
       DB_PORT: 31166
       DB_DATABASE: losowanie
-      DB_USERNAME: ${ssm:/lottery/prod/DB_USERNAME}
-      DB_PASSWORD: ${ssm:/lottery/prod/DB_PASSWORD}
-
+      DB_USERNAME: ${ssm:/lottery/prod/DB_USERNAME~1}
+      DB_PASSWORD: ${ssm:/lottery/prod/DB_PASSWORD~1}
       SESSION_DRIVER: database
       SESSION_LIFETIME: 120
       SESSION_ENCRYPT: false
       SESSION_PATH: /
       SESSION_DOMAIN: null
-
       BROADCAST_CONNECTION: log
       FILESYSTEM_DISK: local
       QUEUE_CONNECTION: database
@@ -61,7 +58,7 @@ provider:
       AWS_BUCKET:
       AWS_USE_PATH_STYLE_ENDPOINT: false
       VITE_APP_NAME: "${APP_NAME}"
-      SMS_API_TOKEN: ${ssm:/lottery/prod/SMS_API_TOKEN}
+      SMS_API_TOKEN: ${ssm:/lottery/prod/SMS_API_TOKEN~1}
 plugins:
   # We need to include the Bref plugin
   - ./vendor/bref/bref
