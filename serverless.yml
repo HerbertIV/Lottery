@@ -30,8 +30,8 @@ provider:
       DB_HOST: frog01.mikr.us
       DB_PORT: 31166
       DB_DATABASE: losowanie
-      DB_USERNAME: ${ssm:/parameter/DB_USERNAME}
-      DB_PASSWORD: ${ssm:/parameter/DB_PASSWORD}
+      DB_USERNAME: ${ssm:/DB_USERNAME}
+      DB_PASSWORD: ${ssm:/DB_PASSWORD}
 
       SESSION_DRIVER: database
       SESSION_LIFETIME: 120
@@ -61,7 +61,7 @@ provider:
       AWS_BUCKET:
       AWS_USE_PATH_STYLE_ENDPOINT: false
       VITE_APP_NAME: "${APP_NAME}"
-      SMS_API_TOKEN: ${ssm:/parameter/SMS_API_TOKEN}
+      SMS_API_TOKEN: ${ssm:/SMS_API_TOKEN}
 plugins:
   # We need to include the Bref plugin
   - ./vendor/bref/bref
