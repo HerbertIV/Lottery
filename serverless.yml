@@ -18,6 +18,10 @@ provider:
       SESSION_ENCRYPT: false
       SESSION_PATH: /
       SESSION_DOMAIN: null
+      BROADCAST_CONNECTION: log
+      FILESYSTEM_DISK: local
+      QUEUE_CONNECTION: database
+      CACHE_STORE: database
       DB_CONNECTION: mysql
       DB_HOST: frog01.mikr.us
       DB_PORT: 31166
@@ -25,6 +29,8 @@ provider:
       DB_USERNAME: ${ssm:/lottery/prod/DB_USERNAME}
       DB_PASSWORD: ${ssm:/lottery/prod/DB_PASSWORD}
       SMS_API_TOKEN: ${ssm:/lottery/prod/SMS_API_TOKEN}
+      AWS_ACCESS_KEY_ID: ${ssm:/lottery/prod/AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${ssm:/lottery/prod/AWS_SECRET_ACCESS_KEY}
 plugins:
   # We need to include the Bref plugin
   - ./vendor/bref/bref
