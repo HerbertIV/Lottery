@@ -12,14 +12,13 @@ use App\Services\Contracts\LotterySessionServiceContract;
 use App\Services\Contracts\MembersServiceContract;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 
 class ManageLotteryController extends Controller
 {
     public function __construct(
-        private MembersServiceContract $membersService,
-        private LotterySessionServiceContract $lotterySessionService
+        private readonly MembersServiceContract $membersService,
+        private readonly LotterySessionServiceContract $lotterySessionService
     ) {
     }
 

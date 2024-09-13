@@ -24,9 +24,9 @@ class MemberStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', new UniqueWith(['phone'])],
-            'phone' => ['required_without:email', 'string', 'max:9', 'regex:/^\d{9}$/', new UniqueWith(['name'])],
-            'email' => ['required_without:phone', 'email', new UniqueWith(['name'])],
+            'name' => ['required', 'string', 'max:255', new UniqueWith(['phone', 'lottery_session_id'])],
+            'phone' => ['required_without:email', 'string', 'max:9', 'regex:/^\d{9}$/', new UniqueWith(['name', 'lottery_session_id'])],
+            'email' => ['required_without:phone', 'email', new UniqueWith(['name', 'lottery_session_id'])],
         ];
     }
 }
