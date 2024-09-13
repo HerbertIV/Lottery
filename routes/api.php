@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function (Request $request) {
-    dd([
-        env('DB_CONNECTION'),
-        env('DB_HOST'),
-        env('DB_USERNAME'),
-        env('DB_PASSWORD'),
-    ]);
+    try {
+        dd(DB::connection()->getPdo());
+    } catch (\Exception $e) {
+        die("Could not connect to the database.  Please check your configuration. error:" . $e );
+    }
 });
