@@ -11,53 +11,14 @@ provider:
       APP_NAME: Lottery
       APP_ENV: production
       APP_KEY: base64:3PquE7XiJrfTnCpT4elvQMLhc3YopboAGXkIH/A7j1Y=
-      APP_DEBUG: true
-      APP_TIMEZONE: UTC
       APP_URL: https://dxsyts32b5.execute-api.eu-central-1.amazonaws.com
-      APP_LOCALE: pl
-      APP_FALLBACK_LOCALE: pl
-      APP_FAKER_LOCALE: pl_PL
-      APP_MAINTENANCE_DRIVER: file
-      APP_MAINTENANCE_STORE: database
-      BCRYPT_ROUNDS: 12
-      LOG_CHANNEL: stack
-      LOG_STACK: single
-      LOG_DEPRECATIONS_CHANNEL: null
-      LOG_LEVEL: debug
       DB_CONNECTION: mysql
       DB_HOST: frog01.mikr.us
       DB_PORT: 31166
       DB_DATABASE: losowanie
-      DB_USERNAME: ${ssm(eu-central-1):/lottery/prod/DB_USERNAME}
-      DB_PASSWORD: ${ssm(eu-central-1):/lottery/prod/DB_PASSWORD}
-      SESSION_DRIVER: database
-      SESSION_LIFETIME: 120
-      SESSION_ENCRYPT: false
-      SESSION_PATH: /
-      SESSION_DOMAIN: null
-      BROADCAST_CONNECTION: log
-      FILESYSTEM_DISK: local
-      QUEUE_CONNECTION: database
-      CACHE_STORE: database
-      CACHE_PREFIX:
-      MEMCACHED_HOST: 127.0.0.1
-      REDIS_CLIENT: phpredis
-      REDIS_HOST: 127.0.0.1
-      REDIS_PASSWORD: null
-      REDIS_PORT: 6379
-      MAIL_MAILER: log
-      MAIL_HOST: 127.0.0.1
-      MAIL_PORT: 2525
-      MAIL_USERNAME: null
-      MAIL_PASSWORD: null
-      MAIL_ENCRYPTION: null
-      MAIL_FROM_ADDRESS: "hello@example.com"
-      MAIL_FROM_NAME: "${APP_NAME}"
-      AWS_DEFAULT_REGION: us-east-1
-      AWS_BUCKET:
-      AWS_USE_PATH_STYLE_ENDPOINT: false
-      VITE_APP_NAME: "${APP_NAME}"
-      SMS_API_TOKEN: ${ssm(eu-central-1):/lottery/prod/SMS_API_TOKEN}
+      DB_USERNAME: ${ssm:/lottery/prod/DB_USERNAME, null}
+      DB_PASSWORD: ${ssm:/lottery/prod/DB_PASSWORD, null}
+      SMS_API_TOKEN: ${ssm:/lottery/prod/SMS_API_TOKEN, null}
 plugins:
   # We need to include the Bref plugin
   - ./vendor/bref/bref
@@ -91,3 +52,4 @@ functions:
         #    - schedule:
         #          rate: rate(1 minute)
         #          input: '"schedule:run"'
+
