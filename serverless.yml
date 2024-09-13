@@ -13,6 +13,11 @@ provider:
       APP_DEBUG: true
       APP_KEY: base64:3PquE7XiJrfTnCpT4elvQMLhc3YopboAGXkIH/A7j1Y=
       APP_URL: https://1vj3gc5w99.execute-api.eu-central-1.amazonaws.com
+      SESSION_DRIVER: database
+      SESSION_LIFETIME: 120
+      SESSION_ENCRYPT: false
+      SESSION_PATH: /
+      SESSION_DOMAIN: null
       DB_CONNECTION: mysql
       DB_HOST: frog01.mikr.us
       DB_PORT: 31166
