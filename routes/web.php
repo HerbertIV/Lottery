@@ -10,20 +10,23 @@ Route::group(['prefix' => '/login', 'middleware' => ['redirect.if.authenticated'
     Route::post('/', [AuthController::class, 'login'])->name('auth.login');
 });
 Route::middleware(['auth'])->group(function () {
-    Route::get('/create', [ManageLotteryController::class, 'create'])->name('session.create');
-    Route::post('/create', [ManageLotteryController::class, 'store'])->name('session.store');
-    Route::group(['prefix' => '/{session}'], function () {
-        Route::post('/', [ManageLotteryController::class, 'storeMember'])->name('session.member.store');
-        Route::delete('/{member}', [ManageLotteryController::class, 'destroyMember'])->name('session.member.destroy');
-        Route::get('/{member}/send', [ManageLotteryController::class, 'sendDrawnMember'])->name('session.member.send-drawn-member');
+    Route::get('/create', [ManageLotteryController::class, 'create'])->name('lottery-session.create');
+    Route::post('/create', [ManageLotteryController::class, 'store'])->name('lottery-session.store');
+    Route::group(['prefix' => '/{lotterySessionName}'], function () {
+        Route::post('/', [ManageLotteryController::class, 'storeMember'])->name('lottery-session.member.store');
+        Route::delete('/{member}', [ManageLotteryController::class, 'destroyMember'])->name('lottery-session.member.destroy');
+        Route::get('/{member}/send', [ManageLotteryController::class, 'sendDrawnMember'])->name('lottery-session.member.send-drawn-member');
+
+
+        Route::post('/store-turn', [ManageLotteryController::class, 'storeTurn'])->name('lottery-session.turn.store');
     });
 });
 
-Route::get('/', [LotteryController::class, 'render'])->name('session.render');
-Route::post('/', [LotteryController::class, 'setSession'])->name('session.set');
-Route::group(['prefix' => '/{session}'], function () {
-    Route::get('/', [LotteryController::class, 'show'])->name('session.show');
-    Route::get('/{member}', [LotteryController::class, 'lottery'])->name('session.lottery');
-    Route::post('/{member}', [LotteryController::class, 'drawMember'])->name('session.draw_member');
+Route::get('/', [LotteryController::class, 'render'])->name('lottery-session.render');
+Route::post('/', [LotteryController::class, 'setSession'])->name('lottery-session.set');
+Route::group(['prefix' => '/{lotterySessionName}'], function () {
+    Route::get('/', [LotteryController::class, 'show'])->name('lottery-session.show');
+    Route::get('/{member}', [LotteryController::class, 'lottery'])->name('lottery-session.lottery');
+    Route::post('/{member}', [LotteryController::class, 'drawMember'])->name('lottery-session.draw_member');
 });
 

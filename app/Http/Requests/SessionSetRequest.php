@@ -27,7 +27,7 @@ class SessionSetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'session' => [
+            'session_name' => [
                 'required',
                 'string',
                 'max:255',
@@ -37,7 +37,7 @@ class SessionSetRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                new MemberInSession($this->input('name'), $this->input('session'))
+                new MemberInSession($this->input('name'), $this->input('session_name'))
             ]
         ];
     }
@@ -45,10 +45,10 @@ class SessionSetRequest extends FormRequest
     public function messages()
     {
         return [
-            'session.required' => 'Sesja jest wymagane',
-            'session.string' => 'Sesja musi być ciągiem znaków',
-            'session.max' => 'Maksymalna długość w polu kod sesji nie może przekraczać :max',
-            'session.exists' => 'Ta sesja nie ma takiego członka',
+            'session_name.required' => 'Sesja jest wymagane',
+            'session_name.string' => 'Sesja musi być ciągiem znaków',
+            'session_name.max' => 'Maksymalna długość w polu kod sesji nie może przekraczać :max',
+            'session_name.exists' => 'Ta sesja nie ma takiego członka',
             'name.required' => 'Imię i nazwisko jest wymagane',
             'name.string' => 'Imię i nazwisko musi być ciągiem znaków',
             'name.max' => 'Maksymalna długość w polu Imię i nazwisko nie może przekraczać :max',

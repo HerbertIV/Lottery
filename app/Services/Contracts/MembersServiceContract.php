@@ -16,5 +16,4 @@ interface MembersServiceContract
     public function getMemberNotDrawn(LotterySession $lotterySession, ?Member $withoutMe = null): Collection;
     public function draw(Member $member, string $sessionName): ?Member;
     public function sendDrawnMember(Member $member, string $sessionName): bool;
-    public function markAsDrawn(Member $member, Member $memberDrawn): void;
 }

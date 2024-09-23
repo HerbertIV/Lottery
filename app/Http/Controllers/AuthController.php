@@ -23,7 +23,7 @@ class AuthController extends Controller
         if ($this->authService->login(
             $request->only(['email', 'password'])
         )) {
-            return redirect()->intended(route('session.render'));
+            return redirect()->intended(route('lottery-session.render'));
         }
 
         return redirect()->back()->with('error', 'Invalid credentials');

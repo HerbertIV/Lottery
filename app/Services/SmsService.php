@@ -8,7 +8,6 @@ use App\Traits\FacadeHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-use function Symfony\Component\Translation\t;
 
 class SmsService implements SmsServiceContract
 {

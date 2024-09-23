@@ -17,7 +17,7 @@ class Authenticated
     public function handle(Request $request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect(route('session.render')); // Redirect to the desired page
+            return redirect(route('lottery-session.render')); // Redirect to the desired page
         }
 
         return $next($request);

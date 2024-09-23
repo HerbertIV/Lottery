@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Member extends Model
 {
@@ -17,40 +20,26 @@ class Member extends Model
     protected $fillable = [
         'name',
         'phone',
-        'drawn_member_uuid',
-        'can_draw',
-        'drawn',
     ];
 
-    public function lotterySession(): BelongsTo
+    public function lotterySessionTurnsMember(): HasMany
     {
-        return $this->belongsTo(LotterySession::class);
+        return $this->hasMany(LotterySessionTurnMember::class, 'uuid', 'member_uuid');
     }
 
-
-    public function memberDrawn(): BelongsTo
+    public function lotterySession(): HasOne
     {
-        return $this->belongsTo(Member::class, 'drawn_member_uuid');
+        return $this->hasOne(LotterySession::class, 'id', 'lottery_session_id');
     }
 
-    public function scopeCanDraw(Builder $query): void
+    public function canDraw(): bool
     {
-        $query->whereCanDraw(true);
-    }
+        $activeTurn = $this->lotterySession->activeLotterySessionTurns->first();
 
-    public function scopeCanNotDraw(Builder $query): void
-    {
-        $query->whereCanDraw(false);
+        return $this
+                ->query()
+                ->join('lottery_session_turn_members', 'lottery_session_turn_members.member_uuid', '=', 'members.uuid')
+                ->where('members.uuid', '=', $this->getKey())
+                ->where('lottery_session_turn_id', '=', $activeTurn->getKey())->count() === 0;
     }
-
-    public function scopeNotDrawn(Builder $query): void
-    {
-        $query->whereDrawn(false);
-    }
-
-    public function scopeDrawn(Builder $query): void
-    {
-        $query->whereDrawn(true);
-    }
-
 }

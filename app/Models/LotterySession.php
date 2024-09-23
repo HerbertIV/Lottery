@@ -20,24 +20,18 @@ class LotterySession extends Model
         return $this->hasMany(Member::class);
     }
 
-    public function membersCanDraw(): HasMany
+    public function lotterySessionTurns(): HasMany
     {
-        return $this->members()->canDraw();
+        return $this->hasMany(LotterySessionTurn::class);
     }
 
-    public function membersCanNotDraw(): HasMany
+    public function activeLotterySessionTurns(): HasMany
     {
-        return $this->members()->canNotDraw();
-    }
+        $now = now();
 
-    public function membersNotDrawn(): HasMany
-    {
-        return $this->members()->notDrawn();
-    }
-
-    public function membersDrawn(): HasMany
-    {
-        return $this->members()->drawn();
+        return $this->lotterySessionTurns()
+            ->where('date_from', '<=', $now->format('Y-m-d'))
+            ->where('date_to', '>=', $now->format('Y-m-d'));
     }
 
 }

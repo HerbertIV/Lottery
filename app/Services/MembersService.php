@@ -7,6 +7,7 @@ use App\Http\Requests\MemberStoreRequest;
 use App\Models\LotterySession;
 use App\Models\Member;
 use App\Services\Contracts\LotterySessionServiceContract;
+use App\Services\Contracts\LotterySessionTurnMemberServiceContract;
 use App\Services\Contracts\MembersServiceContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,7 +16,8 @@ use Illuminate\Support\Facades\Log;
 class MembersService implements MembersServiceContract
 {
     public function __construct(
-        private LotterySessionServiceContract $lotterySessionService
+        private readonly LotterySessionServiceContract $lotterySessionService,
+        private readonly LotterySessionTurnMemberServiceContract $lotterySessionTurnMemberService
     ) {
     }
 
@@ -60,31 +62,35 @@ class MembersService implements MembersServiceContract
 
     public function draw(Member $member, string $sessionName): ?Member
     {
-        if (!$member->can_draw) {
+        if (!$member->canDraw()) {
             throw new \Exception('Ten uczestnik już losował');
         }
+        $lotterySession = $this->lotterySessionService->getSessionByName($sessionName);
+        $memberDrawn = $this->lotterySessionService->getNotDrawnMembersFromActiveTurnInLotterySession(
+            $lotterySession,
+            $member
+        )->random(1)->first();
 
-        $lottery = $this->lotterySessionService->getSessionByName($sessionName);
-        $memberDrawn = $this->getMemberNotDrawn($lottery, $member)->random();
-        $this->markAsDrawn($member, $memberDrawn);
+        $this->lotterySessionTurnMemberService->store($lotterySession, $member, $memberDrawn);
 
         return $memberDrawn;
     }
 
-    public function markAsDrawn(Member $member, Member $memberDrawn): void
+    public function getMemberDrawn(Member $member, string $sessionName): ?Member
     {
-        $member->update([
-            'can_draw' => false,
-            'drawn_member_uuid' => $memberDrawn->getKey()
-        ]);
-        $memberDrawn->update([
-            'drawn' => true
-        ]);
+        $lotterySession = $this->lotterySessionService->getSessionByName($sessionName);
+        $activeTurn = $lotterySession->activeLotterySessionTurns()->first();
+
+        return $activeTurn
+            ->lotterySessionTurnMembers()
+            ->where('member_uuid', '=', $member->getKey())
+            ->first()
+            ?->drawnMember;
     }
 
     public function sendDrawnMember(Member $member, string $sessionName): bool
     {
-        $memberDrawn = $member->memberDrawn;
+        $memberDrawn = $this->getMemberDrawn($member, $sessionName);
         if (!$memberDrawn) {
             $memberDrawn = $this->draw($member, $sessionName);
         }
