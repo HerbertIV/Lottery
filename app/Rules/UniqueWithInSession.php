@@ -6,7 +6,7 @@ use App\Models\Member;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class UniqueWith implements ValidationRule
+class UniqueWithInSession implements ValidationRule
 {
     public function __construct(private array $uniqueAttributes)
     {
@@ -21,9 +21,14 @@ class UniqueWith implements ValidationRule
     {
         $uniqueFields = [$attribute => $value];
         foreach ($this->uniqueAttributes as $uniqueAttribute) {
-            $uniqueFields[$uniqueAttribute] = request($uniqueAttribute);
+            $uniqueFields[('members.' . $uniqueAttribute)] = request($uniqueAttribute);
         }
-        if (Member::where($uniqueFields)->count()) {
+        if (
+            Member::where($uniqueFields)
+            ->join('lottery_sessions', 'members.lottery_session_id', '=', 'lottery_sessions.id')
+            ->where('lottery_sessions.session_name', '=', request()->route('lotterySessionName'))
+            ->count()
+        ) {
             $uniqueAttributeString = implode(', ', $this->uniqueAttributes);
             $fail('The :attribute with '.$uniqueAttributeString.' must be unique.');
         }

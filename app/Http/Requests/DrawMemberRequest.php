@@ -2,18 +2,22 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\UniqueWithInSession;
+use App\Models\LotterySessionTurn;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class MemberStoreRequest extends FormRequest
+class DrawMemberRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return LotterySessionTurn::query()
+            ->join('lottery_sessions', 'lottery_sessions.id', '=', 'lottery_session_turns.lottery_session_id')
+            ->where('lottery_sessions.session_name', '=', $this->route('lotterySessionName'))
+            ->activeSession()
+            ->count() > 0;
     }
 
     /**
@@ -23,10 +27,6 @@ class MemberStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => ['required', 'string', 'max:255', new UniqueWithInSession(['phone'])],
-            'phone' => ['required_without:email', 'string', 'max:9', 'regex:/^\d{9}$/', new UniqueWithInSession(['name'])],
-            'email' => ['required_without:phone', 'nullable', 'email', new UniqueWithInSession(['name'])],
-        ];
+        return [];
     }
 }

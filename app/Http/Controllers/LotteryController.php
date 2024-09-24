@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DrawMemberRequest;
 use App\Http\Requests\SessionSetRequest;
 use App\Models\LotterySession;
 use App\Models\Member;
@@ -51,14 +52,20 @@ class LotteryController extends Controller
 
     public function lottery(Request $request, string $lotterySessionName, Member $member): View
     {
+        $lotterySession = $this->lotterySessionService->getSessionByName($lotterySessionName);
+
         return view('lottery', [
+            'activeLotterySessionTurn' => $lotterySession->activeLotterySessionTurns()->first(),
             'lotterySessionName' => $lotterySessionName,
             'member' => $member
         ]);
     }
 
-    public function drawMember(Request $request, string $lotterySessionName, Member $member): View
-    {
+    public function drawMember(
+        DrawMemberRequest $request,
+        string $lotterySessionName,
+        Member $member
+    ): View {
         $memberDrawn = $this->membersService->draw($member, $lotterySessionName);
 
         return view('lottery', [

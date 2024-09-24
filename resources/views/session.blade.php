@@ -240,9 +240,13 @@
                             </form>
                         @endauth
                         <div class="pt-3 sm:pt-5 w-full">
-                            <h2 class="text-xl font-semibold text-black dark:text-white">Aktywna sesja losowania: </h2>
-                            <p>Od: <span>{{ \Carbon\Carbon::make($activeSessionTurn->date_from)->format('d-m-Y') }}</span></p>
-                            <p>Do: <span>{{ \Carbon\Carbon::make($activeSessionTurn->date_to)->format('d-m-Y') }}</span></p>
+                            @if ($activeSessionTurn)
+                                <h2 class="text-xl font-semibold text-black dark:text-white">Aktywna sesja losowania: </h2>
+                                <p>Od: <span>{{ \Carbon\Carbon::make($activeSessionTurn->date_from)->format('d-m-Y') }}</span></p>
+                                <p>Do: <span>{{ \Carbon\Carbon::make($activeSessionTurn->date_to)->format('d-m-Y') }}</span></p>
+                            @else
+                                <h2 class="text-xl font-semibold text-black dark:text-white">Brak aktywnych sesji losowania</h2>
+                            @endif
                         </div>
                     </div>
                     <div

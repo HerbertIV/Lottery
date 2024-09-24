@@ -60,6 +60,7 @@ class ManageLotteryController extends Controller
         $lotterySession->refresh();
         return view('session', [
             'members' => $lotterySession->members,
+            'activeSessionTurn' => $lotterySession->activeLotterySessionTurns()->first(),
             'membersCanDraw' => $this->lotterySessionService->getCanDrawMembersFromActiveTurnInLotterySession($lotterySession),
             'membersCanNotDraw' => $this->lotterySessionService->getCanNotDrawMembersFromActiveTurnInLotterySession($lotterySession),
             'lotterySessionName' => $lotterySessionName

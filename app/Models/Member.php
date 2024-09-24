@@ -36,7 +36,7 @@ class Member extends Model
     {
         $activeTurn = $this->lotterySession->activeLotterySessionTurns->first();
 
-        return $this
+        return $activeTurn && $this
                 ->query()
                 ->join('lottery_session_turn_members', 'lottery_session_turn_members.member_uuid', '=', 'members.uuid')
                 ->where('members.uuid', '=', $this->getKey())

@@ -38,7 +38,7 @@ class LotterySessionService implements LotterySessionServiceContract
 
         return $lotterySession->members()->whereNotIn(
             'uuid',
-            $activeTurn->lotterySessionTurnMembers->pluck('member_uuid')->toArray()
+            $activeTurn ? $activeTurn->lotterySessionTurnMembers->pluck('member_uuid')->toArray() : []
         )->get();
     }
 
@@ -48,7 +48,7 @@ class LotterySessionService implements LotterySessionServiceContract
 
         return $lotterySession->members()->whereIn(
             'uuid',
-            $activeTurn->lotterySessionTurnMembers->pluck('member_uuid')->toArray()
+            $activeTurn ? $activeTurn->lotterySessionTurnMembers->pluck('member_uuid')->toArray() : []
         )->get();
     }
 

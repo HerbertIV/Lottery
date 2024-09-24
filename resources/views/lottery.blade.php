@@ -27,21 +27,27 @@
                     >
                         <div class="w-full relative flex items-center gap-6 lg:items-end">
                             <div id="docs-card-content" class="w-full flex items-start gap-12 lg:flex-col">
-                                <div class="w-full pt-3 sm:pt-5 lg:pt-0 justify-center flex">
-                                    @if ($member->canDraw())
-                                        <h2 class="text-xl font-semibold text-black dark:text-white">Kliknij aby wylosować osobę</h2>
-                                        <form action="{{ route('lottery-session.draw_member', ['lotterySessionName' => $lotterySessionName, 'member' => $member]) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" style="font-weight: bold; padding: 0px 5px;margin-left: 15px; background-color: #FF2D20; color: white; border-radius: 5px">
-                                                Losuj
-                                            </button>
-                                        </form>
+                                <div class="w-full pt-3 sm:pt-5 lg:pt-0 justify-center flex flex-wrap">
+                                    @if ($member->canDraw() && $activeLotterySessionTurn)
+                                        <div class="w-full text-center">
+                                            <h2 class="text-xl font-semibold text-black dark:text-white">Sesja losowania aktywna do: {{ $activeLotterySessionTurn->date_to->format('d-m-Y') }}</h2>
+                                        </div>
+                                        <div class="w-full text-center">
+                                            <h2 class="text-xl font-semibold text-black dark:text-white">Kliknij aby wylosować osobę</h2>
+                                            <form action="{{ route('lottery-session.draw_member', ['lotterySessionName' => $lotterySessionName, 'member' => $member]) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" style="margin-top: 5px; font-weight: bold; padding: 0px 5px;margin-left: 15px; background-color: #FF2D20; color: white; border-radius: 5px">
+                                                    Losuj
+                                                </button>
+                                            </form>
+                                        </div>
+
                                     @else
                                         @isset ($memberDrawn)
                                             <h2 class="text-xl font-semibold text-black dark:text-white">Wylosowałeś: </h2>
                                             <h2 class="text-xl font-semibold text-black dark:text-white">{{ $memberDrawn->name }}</h2>
                                         @else
-                                            <h2 class="text-xl font-semibold text-black dark:text-white">Ten uczestnik już losował osobę</h2>
+                                            <h2 class="text-xl font-semibold text-black dark:text-white">Ten uczestnik już losował osobę lub losowanie nie zostało jeszcze rozpoczęte</h2>
                                         @endif
                                     @endif
                                 </div>

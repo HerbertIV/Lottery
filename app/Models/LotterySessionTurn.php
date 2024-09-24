@@ -37,4 +37,13 @@ class LotterySessionTurn extends Model
             'id'
         );
     }
+
+    public function scopeActiveSession()
+    {
+        $now = now();
+
+        return $this
+            ->where('date_from', '<=', $now->format('Y-m-d'))
+            ->where('date_to', '>=', $now->format('Y-m-d'));
+    }
 }
