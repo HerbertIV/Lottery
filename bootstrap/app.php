@@ -32,4 +32,5 @@ return Application::configure(basePath: dirname(__DIR__))
             }
             Log::error(json_encode($data, JSON_PRETTY_PRINT));
         });
-    })->create();
+    })
+    ->create();

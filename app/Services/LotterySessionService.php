@@ -7,6 +7,7 @@ use App\Models\Member;
 use App\Services\Contracts\LotterySessionServiceContract;
 use App\Services\Contracts\LotterySessionTurnServiceContract;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class LotterySessionService implements LotterySessionServiceContract
@@ -16,12 +17,18 @@ class LotterySessionService implements LotterySessionServiceContract
     ) {
     }
 
-    public function getSessionByName(string $sessionName): LotterySession
-    {
-        $lotterySession = LotterySession::whereSessionName($sessionName)->first();
+    public function getSessionByName(
+        string $sessionName,
+        array $with = []
+    ): LotterySession {
+        $lotterySession = LotterySession::whereSessionName($sessionName)
+            ->with($with)
+            ->first();
+
         if (!$lotterySession) {
             throw new Exception('Ta sesja nie istnieje.');
         }
+
         return $lotterySession;
     }
 
@@ -32,24 +39,35 @@ class LotterySessionService implements LotterySessionServiceContract
         ]);
     }
 
-    public function getCanDrawMembersFromActiveTurnInLotterySession(LotterySession $lotterySession)
-    {
+    public function getCanDrawMembersFromActiveTurnInLotterySession(
+        LotterySession $lotterySession
+    ): Collection {
         $activeTurn = $lotterySession->activeLotterySessionTurns->first();
 
-        return $lotterySession->members()->whereNotIn(
-            'uuid',
-            $activeTurn ? $activeTurn->lotterySessionTurnMembers->pluck('member_uuid')->toArray() : []
-        )->get();
+        return $lotterySession
+            ->members
+            ->filter(
+                fn (Member $member) => !in_array(
+                    $member->uuid,
+                    $activeTurn ? $activeTurn->lotterySessionTurnMembers->pluck('member_uuid')->toArray() : [],
+                    true
+                )
+            );
     }
 
-    public function getCanNotDrawMembersFromActiveTurnInLotterySession(LotterySession $lotterySession)
+    public function getCanNotDrawMembersFromActiveTurnInLotterySession(LotterySession $lotterySession): Collection
     {
         $activeTurn = $lotterySession->activeLotterySessionTurns->first();
 
-        return $lotterySession->members()->whereIn(
-            'uuid',
-            $activeTurn ? $activeTurn->lotterySessionTurnMembers->pluck('member_uuid')->toArray() : []
-        )->get();
+        return $lotterySession
+            ->members
+            ->filter(
+                fn (Member $member) => in_array(
+                    $member->uuid,
+                    $activeTurn ? $activeTurn->lotterySessionTurnMembers->pluck('member_uuid')->toArray() : [],
+                    true
+                )
+            );
     }
 
     public function getNotDrawnMembersFromActiveTurnInLotterySession(
@@ -70,29 +88,6 @@ class LotterySessionService implements LotterySessionServiceContract
         }
 
         return $lotterySession->members()->whereNotIn(
-            'uuid',
-            $lotterySessionTurnMembers->pluck('drawn_member_uuid')->toArray()
-        )->get();
-    }
-
-    public function getDrawnMembersFromActiveTurnInLotterySession(
-        LotterySession $lotterySession,
-        ?Member $memberDrawing = null
-    ) {
-        $activeTurn = $lotterySession->activeLotterySessionTurns->first();
-        if (!$memberDrawing) {
-            $lotterySessionTurnMembers = $activeTurn->lotterySessionTurnMembers;
-        } else {
-            $eligibleMembers = $this->lotterySessionTurnService->getEligibleMembersForDrawer(
-                $lotterySession,
-                $memberDrawing
-            );
-            $lotterySessionTurnMembers = $activeTurn->lotterySessionTurnMembers
-                ->merge($eligibleMembers)
-                ->push(collect(['drawn_member_uuid' => $memberDrawing->getKey()]));
-        }
-
-        return $lotterySession->members()->whereIn(
             'uuid',
             $lotterySessionTurnMembers->pluck('drawn_member_uuid')->toArray()
         )->get();

@@ -9,8 +9,6 @@ use App\Models\Member;
 use App\Services\Contracts\LotterySessionServiceContract;
 use App\Services\Contracts\LotterySessionTurnMemberServiceContract;
 use App\Services\Contracts\MembersServiceContract;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class MembersService implements MembersServiceContract
@@ -21,6 +19,11 @@ class MembersService implements MembersServiceContract
     ) {
     }
 
+    /**
+     * @param  LotterySession  $lotterySession
+     * @param  MemberStoreRequest  $request
+     * @return Member
+     */
     public function store(LotterySession $lotterySession, MemberStoreRequest $request): Member
     {
         return $lotterySession->members()->save(new Member([
@@ -47,52 +50,51 @@ class MembersService implements MembersServiceContract
         return $lotterySession?->members()->whereName(mb_strtolower($memberName))->first();
     }
 
-    public function getMemberByName(string $memberName): ?Member
-    {
-        return Member::whereName(mb_strtolower($memberName))->first();
+    public function getMemberByNameFromSession(
+        string $memberName,
+        string $sessionName
+    ): ?Member {
+        return Member::joinRelationship('lotterySession')
+            ->where('members.name', '=', mb_strtolower($memberName))
+            ->where('lottery_sessions.session_name', '=', $sessionName)
+            ->first();
     }
 
-    public function getMemberNotDrawn(LotterySession $lotterySession, ?Member $withoutMe = null): Collection
-    {
-        return $lotterySession
-            ->membersNotDrawn()
-            ->when($withoutMe, fn (Builder $builder) => $builder->where('uuid', '<>', $withoutMe->getKey()))
-            ->get();
-    }
-
-    public function draw(Member $member, string $sessionName): ?Member
+    public function draw(Member $member, ?LotterySession $lotterySession = null): ?Member
     {
         if (!$member->canDraw()) {
             throw new \Exception('Ten uczestnik już losował');
         }
-        $lotterySession = $this->lotterySessionService->getSessionByName($sessionName);
-        $memberDrawn = $this->lotterySessionService->getNotDrawnMembersFromActiveTurnInLotterySession(
-            $lotterySession,
-            $member
-        )->random(1)->first();
 
+        $lotterySession = $lotterySession ?: $member->lotterySession;
+        $memberDrawn = $this->lotterySessionService
+            ->getNotDrawnMembersFromActiveTurnInLotterySession(
+                $lotterySession,
+                $member
+            )->random(1)
+            ->first();
         $this->lotterySessionTurnMemberService->store($lotterySession, $member, $memberDrawn);
 
         return $memberDrawn;
     }
 
-    public function getMemberDrawn(Member $member, string $sessionName): ?Member
+    public function getMemberDrawn(Member $member): ?Member
     {
-        $lotterySession = $this->lotterySessionService->getSessionByName($sessionName);
-        $activeTurn = $lotterySession->activeLotterySessionTurns()->first();
+        $lotterySession = $member->lotterySession()->with('activeLotterySessionTurns')->first();
+        $activeTurn = $lotterySession?->activeLotterySessionTurns;
 
         return $activeTurn
-            ->lotterySessionTurnMembers()
+            ?->lotterySessionTurnMembers()
             ->where('member_uuid', '=', $member->getKey())
             ->first()
             ?->drawnMember;
     }
 
-    public function sendDrawnMember(Member $member, string $sessionName): bool
+    public function sendDrawnMember(Member $member): bool
     {
-        $memberDrawn = $this->getMemberDrawn($member, $sessionName);
+        $memberDrawn = $this->getMemberDrawn($member);
         if (!$memberDrawn) {
-            $memberDrawn = $this->draw($member, $sessionName);
+            $memberDrawn = $this->draw($member);
         }
 
         return Sms::make()

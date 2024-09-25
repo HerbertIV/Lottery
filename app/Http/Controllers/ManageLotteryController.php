@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SmsSendEvent;
 use App\Http\Requests\CreateSessionRequest;
 use App\Http\Requests\DestroyMemberRequest;
 use App\Http\Requests\MemberStoreRequest;
 use App\Http\Requests\SendDrawnMemberRequest;
 use App\Http\Requests\StoreSessionRequest;
 use App\Http\Requests\StoreTurnRequest;
+use App\Models\LotterySession;
 use App\Models\Member;
 use App\Services\Contracts\LotterySessionServiceContract;
 use App\Services\Contracts\LotterySessionTurnServiceContract;
@@ -36,11 +38,11 @@ class ManageLotteryController extends Controller
     }
 
     public function storeTurn(
-        string $lotterySessionName,
+        LotterySession $lotterySession,
         StoreTurnRequest $request
     ): RedirectResponse|Redirector {
-        $lotterySession = $this->lotterySessionService->getSessionByName($lotterySessionName);
         $this->lotterySessionTurnService->store($lotterySession, $request);
+
         return redirect(
             route('lottery-session.show', [
                 'lotterySessionName' => $lotterySession->session_name
@@ -53,39 +55,38 @@ class ManageLotteryController extends Controller
         return view('create');
     }
 
-    public function storeMember(MemberStoreRequest $request, string $lotterySessionName): View
+    public function storeMember(MemberStoreRequest $request, LotterySession $lotterySession): View
     {
-        $lotterySession = $this->lotterySessionService->getSessionByName($lotterySessionName);
         $this->membersService->store($lotterySession, $request);
         $lotterySession->refresh();
+
         return view('session', [
             'members' => $lotterySession->members,
             'activeSessionTurn' => $lotterySession->activeLotterySessionTurns()->first(),
             'membersCanDraw' => $this->lotterySessionService->getCanDrawMembersFromActiveTurnInLotterySession($lotterySession),
             'membersCanNotDraw' => $this->lotterySessionService->getCanNotDrawMembersFromActiveTurnInLotterySession($lotterySession),
-            'lotterySessionName' => $lotterySessionName
+            'lotterySessionName' => $lotterySession->session_name
         ]);
     }
 
     public function destroyMember(
         DestroyMemberRequest $request,
-        string $lotterySessionName,
+        LotterySession $lotterySession,
         Member $member
     ): RedirectResponse|Redirector {
         $this->membersService->destroy($member);
 
         return redirect(
-            route('lottery-session.show', ['lotterySessionName' => $lotterySessionName])
+            route('lottery-session.show', [$lotterySession])
         );
     }
 
     public function sendDrawnMember(
-        SendDrawnMemberRequest $request,
-        string $lotterySessionName,
+        LotterySession $lotterySession,
         Member $member
     ): RedirectResponse|Redirector {
-        $this->membersService->sendDrawnMember($member, $lotterySessionName);
+        event(new SmsSendEvent($member));
 
-        return redirect(route('lottery-session.show', [$lotterySessionName]));
+        return redirect(route('lottery-session.show', [$lotterySession]));
     }
 }

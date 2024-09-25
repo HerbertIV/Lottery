@@ -22,9 +22,13 @@ class Member extends Model
         'phone',
     ];
 
+    protected $with = [
+        'lotterySession'
+    ];
+
     public function lotterySessionTurnsMember(): HasMany
     {
-        return $this->hasMany(LotterySessionTurnMember::class, 'uuid', 'member_uuid');
+        return $this->hasMany(LotterySessionTurnMember::class, 'member_uuid', 'uuid');
     }
 
     public function lotterySession(): HasOne
@@ -32,14 +36,19 @@ class Member extends Model
         return $this->hasOne(LotterySession::class, 'id', 'lottery_session_id');
     }
 
-    public function canDraw(): bool
+    public function canDraw(?LotterySessionTurn $activeLotterySessionTurn = null): bool
     {
-        $activeTurn = $this->lotterySession->activeLotterySessionTurns->first();
+        if (isset($this->can_draw)) {
 
-        return $activeTurn && $this
+            return $this->can_draw;
+        }
+        $activeLotterySessionTurn = $activeLotterySessionTurn ?:
+            $this->lotterySession->activeLotterySessionTurns->first();
+
+        return $activeLotterySessionTurn && $this
                 ->query()
-                ->join('lottery_session_turn_members', 'lottery_session_turn_members.member_uuid', '=', 'members.uuid')
+                ->joinRelationship('lotterySessionTurnsMember')
                 ->where('members.uuid', '=', $this->getKey())
-                ->where('lottery_session_turn_id', '=', $activeTurn->getKey())->count() === 0;
+                ->where('lottery_session_turn_id', '=', $activeLotterySessionTurn->getKey())->count() === 0;
     }
 }

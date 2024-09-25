@@ -7,9 +7,11 @@
     "require": {
         "php": "^8.2",
         "baopham/dynamodb": "^6.5",
+        "barryvdh/laravel-debugbar": "^3.14",
         "blade-ui-kit/blade-heroicons": "^2.3",
         "bref/bref": "^2.1",
         "bref/laravel-bridge": "^2.3",
+        "kirschbaum-development/eloquent-power-joins": "^3.5",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9"

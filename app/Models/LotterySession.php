@@ -15,6 +15,8 @@ class LotterySession extends Model
         'status'
     ];
 
+
+
     public function members(): HasMany
     {
         return $this->hasMany(Member::class);

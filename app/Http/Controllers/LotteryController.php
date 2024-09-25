@@ -6,6 +6,7 @@ use App\Http\Requests\DrawMemberRequest;
 use App\Http\Requests\SessionSetRequest;
 use App\Models\LotterySession;
 use App\Models\Member;
+use App\Repositories\Contracts\MemberRepositoriesContract;
 use App\Services\Contracts\LotterySessionServiceContract;
 use App\Services\Contracts\MembersServiceContract;
 use Illuminate\Contracts\View\View;
@@ -15,7 +16,8 @@ class LotteryController extends Controller
 {
     public function __construct(
         private readonly MembersServiceContract $membersService,
-        private readonly LotterySessionServiceContract $lotterySessionService
+        private readonly LotterySessionServiceContract $lotterySessionService,
+        private readonly MemberRepositoriesContract $memberRepositories,
     ) {
     }
 
@@ -28,48 +30,49 @@ class LotteryController extends Controller
 
     public function setSession(SessionSetRequest $sessionSetRequest)
     {
-        $member = $this->membersService->getMemberByName($sessionSetRequest->input('name'));
+        $member = $this->membersService->getMemberByNameFromSession(
+            $sessionSetRequest->input('name'),
+            $sessionSetRequest->input('session_name')
+        );
+
         return redirect(
             route('lottery-session.lottery', [
-                'lotterySessionName' => $sessionSetRequest->input('session_name'),
+                'lotterySession' => $sessionSetRequest->input('session_name'),
                 'member' => $member
             ])
         );
     }
 
-    public function show(string $lotterySessionName): View
+    public function show(LotterySession $lotterySession): View
     {
-        $lotterySession = $this->lotterySessionService->getSessionByName($lotterySessionName);
-
         return view('session', [
-            'members' => $lotterySession->members,
+            'members' => $this->memberRepositories->getMembersForSession($lotterySession),
             'membersCanDraw' => $this->lotterySessionService->getCanDrawMembersFromActiveTurnInLotterySession($lotterySession),
             'membersCanNotDraw' => $this->lotterySessionService->getCanNotDrawMembersFromActiveTurnInLotterySession($lotterySession),
-            'lotterySessionName' => $lotterySessionName,
+            'lotterySessionName' => $lotterySession->session_name,
             'activeSessionTurn' => $lotterySession->activeLotterySessionTurns->first()
         ]);
     }
 
-    public function lottery(Request $request, string $lotterySessionName, Member $member): View
+    public function lottery(Request $request, LotterySession $lotterySession, Member $member): View
     {
-        $lotterySession = $this->lotterySessionService->getSessionByName($lotterySessionName);
 
         return view('lottery', [
-            'activeLotterySessionTurn' => $lotterySession->activeLotterySessionTurns()->first(),
-            'lotterySessionName' => $lotterySessionName,
+            'activeLotterySessionTurn' => $lotterySession->activeLotterySessionTurns->first(),
+            'lotterySessionName' => $lotterySession->session_name,
             'member' => $member
         ]);
     }
 
     public function drawMember(
         DrawMemberRequest $request,
-        string $lotterySessionName,
+        LotterySession $lotterySession,
         Member $member
     ): View {
-        $memberDrawn = $this->membersService->draw($member, $lotterySessionName);
+        $memberDrawn = $this->membersService->draw($member);
 
         return view('lottery', [
-            'lotterySessionName' => $lotterySessionName,
+            'lotterySessionName' => $lotterySession->session_name,
             'member' => $member,
             'memberDrawn' => $memberDrawn,
         ]);
