@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 @include('components.head')
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
+@include('components.snow')
 @if ($errors->any())
     <div class="alert alert-danger mt-4">
         <ul>

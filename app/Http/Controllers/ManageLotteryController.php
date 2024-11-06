@@ -32,7 +32,7 @@ class ManageLotteryController extends Controller
         $session = $this->lotterySessionService->generate();
         return redirect(
             route('lottery-session.show', [
-                'lotterySessionName' => $session->session_name
+                'lotterySession' => $session->session_name
             ])
         );
     }
@@ -45,7 +45,7 @@ class ManageLotteryController extends Controller
 
         return redirect(
             route('lottery-session.show', [
-                'lotterySessionName' => $lotterySession->session_name
+                'lotterySession' => $lotterySession->session_name
             ])
         );
     }
@@ -77,7 +77,7 @@ class ManageLotteryController extends Controller
         $this->membersService->destroy($member);
 
         return redirect(
-            route('lottery-session.show', [$lotterySession])
+            route('lottery-session.show', ['lotterySession' => $lotterySession->session_name])
         );
     }
 
@@ -87,6 +87,6 @@ class ManageLotteryController extends Controller
     ): RedirectResponse|Redirector {
         event(new SmsSendEvent($member));
 
-        return redirect(route('lottery-session.show', [$lotterySession]));
+        return redirect(route('lottery-session.show', ['lotterySession' => $lotterySession->session_name]));
     }
 }

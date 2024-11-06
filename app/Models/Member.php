@@ -36,6 +36,7 @@ class Member extends Model
         return $this->hasOne(LotterySession::class, 'id', 'lottery_session_id');
     }
 
+
     public function canDraw(?LotterySessionTurn $activeLotterySessionTurn = null): bool
     {
         if (isset($this->can_draw)) {

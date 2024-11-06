@@ -7,7 +7,6 @@
     "require": {
         "php": "^8.2",
         "baopham/dynamodb": "^6.5",
-        "barryvdh/laravel-debugbar": "^3.14",
         "blade-ui-kit/blade-heroicons": "^2.3",
         "bref/bref": "^2.1",
         "bref/laravel-bridge": "^2.3",
@@ -18,6 +17,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "barryvdh/laravel-debugbar": "^3.14",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",

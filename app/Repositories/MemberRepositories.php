@@ -12,7 +12,7 @@ class MemberRepositories implements MemberRepositoriesContract
         $activeTurn = $lotterySession->activeLotterySessionTurns->first();
 
         if (!$activeTurn) {
-            $members = $lotterySession->members->map(fn ($member) => $member->can_draw = false);
+            $members = $lotterySession->members;
         } else {
             $members = $lotterySession
                 ->members()

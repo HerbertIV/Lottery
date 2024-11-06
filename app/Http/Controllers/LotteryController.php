@@ -56,7 +56,6 @@ class LotteryController extends Controller
 
     public function lottery(Request $request, LotterySession $lotterySession, Member $member): View
     {
-
         return view('lottery', [
             'activeLotterySessionTurn' => $lotterySession->activeLotterySessionTurns->first(),
             'lotterySessionName' => $lotterySession->session_name,
@@ -70,8 +69,8 @@ class LotteryController extends Controller
         Member $member
     ): View {
         $memberDrawn = $this->membersService->draw($member);
-
         return view('lottery', [
+            'activeLotterySessionTurn' => $lotterySession->activeLotterySessionTurns->first(),
             'lotterySessionName' => $lotterySession->session_name,
             'member' => $member,
             'memberDrawn' => $memberDrawn,
