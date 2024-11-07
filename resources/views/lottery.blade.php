@@ -31,11 +31,13 @@
                                         </h2>
                                     </div>
                                     @if ($member->canDraw($activeLotterySessionTurn) && $activeLotterySessionTurn)
-                                        <div class="w-full text-center">
-                                            <h2 class="text-xl font-semibold text-black dark:text-white">Sesja losowania
-                                                aktywna
-                                                do: {{ $activeLotterySessionTurn->date_to->format('d-m-Y') }}</h2>
-                                        </div>
+                                        @auth
+                                            <div class="w-full text-center">
+                                                <h2 class="text-xl font-semibold text-black dark:text-white">Sesja losowania
+                                                    aktywna
+                                                    do: {{ $activeLotterySessionTurn->date_to->format('d-m-Y') }}</h2>
+                                            </div>
+                                        @endauth
                                         <div class="w-full text-center">
                                             <h2 class="text-xl font-semibold text-black dark:text-white">Kliknij aby
                                                 wylosować osobę</h2>
