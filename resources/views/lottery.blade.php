@@ -11,7 +11,7 @@
         <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
             <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                 <div class="flex lg:justify-center lg:col-start-2">
-                    <img src="https://drive.google.com/file/d/1Q8Jza7g4rNk6kXxD-FQxGZCYHCad8ehl/view?usp=sharing"/>
+                    <img src="https://raw.githubusercontent.com/HerbertIV/Lottery/refs/heads/main/public/santa.png"/>
                 </div>
             </header>
 
